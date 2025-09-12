@@ -1,0 +1,10 @@
+jenkins:
+  host: 192.168.1.1
+  port: 8080
+  username: "admin"
+  password: "admin"
+rss:
+  checkIntervalSeconds: 60
+  feeds:
+    - url: "https://github.com/aformusatii/docker-media-dl/releases.atom"
+      jenkinsJobName: Test/TestDockerNodeJs
