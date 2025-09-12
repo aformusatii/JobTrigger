@@ -6,7 +6,7 @@ export default class RSSChecker {
 
     constructor(config) {
         this.config = config
-        this.db = new Level('feeds', { valueEncoding: 'json' })
+        this.db = new Level('db_feeds', { valueEncoding: 'json' })
         this.listeners = {};
     }
 

@@ -138,3 +138,5 @@ server/images/
 
 configuration.yaml
 .vs/
+
+db_feeds/
