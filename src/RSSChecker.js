@@ -4,19 +4,20 @@ import { extractFeedEntries } from './RSSParser.js'
 
 export default class RSSChecker {
 
-    constructor(config) {
-        this.config = config
+    constructor(checkIntervalSeconds) {
+        this.checkIntervalSeconds = checkIntervalSeconds;
         this.db = new Level('db_feeds', { valueEncoding: 'json' })
-        this.listeners = {};
+        this.feeds = [];
     }
 
     start() {
-        setInterval(this.checkFeeds.bind(this), this.config.checkIntervalSeconds * 1000);
+        console.log(`Starting RSS Checker with interval ${this.checkIntervalSeconds} seconds`);
+        setInterval(this.checkFeeds.bind(this), this.checkIntervalSeconds * 1000);
         this.checkFeeds();
     }
 
     async checkFeeds() {
-        for (const feed of this.config.feeds) {
+        for (const feed of this.feeds) {
             try {
                 const response = await axios.get(feed.url);
                 // convert response.data to an object
@@ -52,21 +53,27 @@ export default class RSSChecker {
 
                 if (!firstTimeFeed) {
                     // Process the new entry (e.g., send a notification)
-                    const newFeedListners = this.listeners['newFeed'] || [];
-                    for (const listener of newFeedListners) {
-                        await listener(feed, feedEntry);
+                    if (feed.delaySeconds) {
+                        // execute after delay
+                        setTimeout(async () => {
+                            await feed.listner(feed, feedEntry);
+                        }, feed.delaySeconds * 1000);
+                        
+                    } else {
+                        // execute immediately
+                        await feed.listner(feed, feedEntry);
                     }
                 }
             }
         }
     }
 
-    async on(event, listener) {
-        if (!this.listeners[event]) {
-            this.listeners[event] = [];
-        }
-
-        this.listeners[event].push(listener);
+    registerNewFeedAndListener(url, delaySeconds, listener) {
+        this.feeds.push({
+            url: url,
+            delaySeconds: delaySeconds,
+            listner: listener
+        });
     }
 
 }
