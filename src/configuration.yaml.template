@@ -1,27 +1,23 @@
+rssGlobal:
+  checkIntervalSeconds: 60
+
 jenkins:
   host: 192.168.1.1
   port: 8080
   username: "admin"
   password: "admin"
 
-rss:
-  checkIntervalSeconds: 60
-  feeds:
-    - url: "https://github.com/aformusatii/docker-media-dl/releases.atom"
-      jenkinsJobName: Test/TestDockerNodeJs
-
-jenkinsJobs:
+  jobs:
     portainerOnVM1:
-        jobName: "Test/TestPortainerOnVM1"
-        parameters:
-            workingDirectory: "/home/user/media-dl"
-            service: portainer
-            server:
-                host: 192.168.100.5
-                user: aform
-                credentialsId: "ssh-key-1"
-        triggers:
-            rssFeed:
-                url: "https://github.com/aformusatii/docker-media-dl/releases.atom"
-                delaySeconds: 300
+      jobName: Test/TestDockerNodeJs
+      parameters:
+        workingDirectory: "/home/user/media-dl"
+        service: portainer
+        sshHost: 192.168.100.5
+        sshUser: aform
+        sshCredentialsId: "ssh-key-1"
+      triggers:
+        rssFeed:
+          url: "https://github.com/aformusatii/docker-media-dl/releases.atom"
+          delaySeconds: 300
 
