@@ -1,6 +1,6 @@
 import { Level } from 'level'
 
-const db = new Level('feeds', { valueEncoding: 'json' })
+const db = new Level('db_feeds', { valueEncoding: 'json' })
 
 for await (const [key, value] of db.iterator()) {
   console.log(key, value) // 2
