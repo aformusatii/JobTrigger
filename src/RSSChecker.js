@@ -45,7 +45,7 @@ export default class RSSChecker {
             const id = feedEntry.id;
             const updated = feedEntry.updated;
             // Check if the entry is already in the database
-            const feedEntryKey = feed.url + '|' + id;
+            const feedEntryKey = feed.url + (feed.version ? ('|' + feed.version) : '') + '|' + id;
             const existing = await this.db.get(feedEntryKey);
 
             if (typeof existing === 'undefined') {
