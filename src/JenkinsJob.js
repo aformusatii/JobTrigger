@@ -16,7 +16,7 @@ export default class JenkinsJob {
                 FEED_CONTENT: feedEntry.content
             }
             const buildId = await this.jenkinsClient.runJob(this.jobName, parameters);
-            console.log(this.name, `Triggered Jenkins job ${this.jobName} with build ID: ${buildId}`, feed, feedEntry);
+            console.log(this.name, `Triggered Jenkins job ${this.jobName}`, feed, feedEntry);
         } catch (error) {
             console.error(this.name, `Error triggering Jenkins job ${this.jobName}:`, error);
         }
