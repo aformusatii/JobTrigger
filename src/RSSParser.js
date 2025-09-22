@@ -59,6 +59,9 @@ const extractFeedEntries = async function (xmlData) {
     });
   }
 
+  // order descending by updatedDate
+  feeds.sort((a, b) => b.updatedDate - a.updatedDate);
+
   return feeds;
 };
 
