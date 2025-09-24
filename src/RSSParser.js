@@ -52,7 +52,7 @@ const extractFeedEntries = async function (xmlData, filter) {
 
     if (filter) {
       if (filter.titlePattern) {
-        const regex = new RegExp(filter.titlePattern, "i");
+        const regex = new RegExp(filter.titlePattern.trim(), "i");
         if (!regex.test(entry.title[0])) {
           // title does not match pattern, skip this entry
           continue;
