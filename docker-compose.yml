@@ -6,6 +6,8 @@ services:
     volumes:
       - ./:/usr/src/app
     working_dir: /usr/src/app/src
+    environment:
+      TZ: Europe/Chisinau
     command: >-
       sh -lc "npm install && npm start"
     user: "1000:1000"
