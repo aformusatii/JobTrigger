@@ -27,8 +27,7 @@ export default class StartupInitializer {
 
             if (jobConfig.triggers && jobConfig.triggers.rssFeed) {
                 this.rssChecker.registerNewFeedAndListener(
-                    jobConfig.triggers.rssFeed.url,
-                    jobConfig.triggers.rssFeed.delaySeconds,
+                    jobConfig.triggers.rssFeed,
                     (feed, feedEntry) => job.trigger(feed, feedEntry)
                 );
             }

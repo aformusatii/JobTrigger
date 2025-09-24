@@ -18,24 +18,26 @@ export default class RSSChecker {
 
     async checkFeeds() {
         for (const feed of this.feeds) {
+            const feedConfig = feed.config;
+            
             try {
-                const response = await axios.get(feed.url);
+                const response = await axios.get(feedConfig.url);
                 // convert response.data to an object
                 const feedEntries = await extractFeedEntries(response.data);
                 this.processFeed(feed, feedEntries);
             } catch (error) {
-                console.error(`Error fetching feed ${feed.url}:`, error);
+                console.error(`Error fetching feed ${feedConfig.url}:`, error);
             }
         }
     }
 
     async processFeed(feed, feedEntries) {
         // console.log(feed, feedEntries);
-
+        const feedConfig = feed.config;
         let listnerCalled = false;
 
         // if this is the first time we see this feed, mark it as seen but do not process entries
-        const feedKey = feed.url + (feed.version ? ('|' + feed.version) : '') + '|feed';
+        const feedKey = feedConfig.url + (feedConfig.version ? ('|' + feedConfig.version) : '') + '|feed';
         const firstTimeFeed = typeof (await this.db.get(feedKey)) === 'undefined';
         if (firstTimeFeed) {
             await this.db.put(feedKey, true);
@@ -58,26 +60,25 @@ export default class RSSChecker {
                     listnerCalled = true;
 
                     // Process the new entry (e.g., send a notification)
-                    if (feed.delaySeconds) {
+                    if (feedConfig.delaySeconds) {
                         // execute after delay
                         setTimeout(async () => {
-                            await feed.listner(feed, feedEntry);
-                        }, feed.delaySeconds * 1000);
+                            await feed.listener(feed, feedEntry);
+                        }, feedParams.delaySeconds * 1000);
                         
                     } else {
                         // execute immediately
-                        await feed.listner(feed, feedEntry);
+                        await feed.listener(feed, feedEntry);
                     }
                 }
             }
         }
     }
 
-    registerNewFeedAndListener(url, delaySeconds, listener) {
+    registerNewFeedAndListener(feedConfig, listener) {
         this.feeds.push({
-            url: url,
-            delaySeconds: delaySeconds,
-            listner: listener
+            config: feedConfig,
+            listener: listener
         });
     }
 
