@@ -31,17 +31,16 @@ export default class RSSChecker {
 
     async processFeed(feed, feedEntries) {
         // console.log(feed, feedEntries);
-        
+
+        let listnerCalled = false;
+
+        // if this is the first time we see this feed, mark it as seen but do not process entries
+        const firstTimeFeed = typeof (await this.db.get(feed.url + '|firstTimeFeed')) === 'undefined';
+        if (firstTimeFeed) {
+            await this.db.put(feed.url + '|firstTimeFeed', true);
+        }
+
         for (const feedEntry of feedEntries) {
-
-            let listnerCalled = false;
-
-            // if this is the first time we see this feed, mark it as seen but do not process entries
-            const firstTimeFeed = typeof (await this.db.get(feed.url + '|firstTimeFeed')) === 'undefined';
-            if (firstTimeFeed) {
-                await this.db.put(feed.url + '|firstTimeFeed', true);
-            }
-
             const id = feedEntry.id;
             const updated = feedEntry.updated;
             // Check if the entry is already in the database
@@ -53,6 +52,7 @@ export default class RSSChecker {
                 await this.db.put(feedEntryKey, feedEntry);
                 console.log(`New entry added to database`, id);
 
+                // prevent multiple calls to listener for multiple new entries in one feed check
                 if (!firstTimeFeed && !listnerCalled) {
                     // Call listener only once per feed check
                     listnerCalled = true;
