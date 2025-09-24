@@ -35,16 +35,16 @@ export default class RSSChecker {
         let listnerCalled = false;
 
         // if this is the first time we see this feed, mark it as seen but do not process entries
-        const firstTimeFeed = typeof (await this.db.get(feed.url + '|firstTimeFeed')) === 'undefined';
+        const feedKey = feed.url + (feed.version ? ('|' + feed.version) : '') + '|feed';
+        const firstTimeFeed = typeof (await this.db.get(feedKey)) === 'undefined';
         if (firstTimeFeed) {
-            await this.db.put(feed.url + '|firstTimeFeed', true);
+            await this.db.put(feedKey, true);
         }
 
         for (const feedEntry of feedEntries) {
-            const id = feedEntry.id;
-            const updated = feedEntry.updated;
             // Check if the entry is already in the database
-            const feedEntryKey = feed.url + (feed.version ? ('|' + feed.version) : '') + '|' + id;
+            const id = feedEntry.id;
+            const feedEntryKey = feedKey + '|' + id;
             const existing = await this.db.get(feedEntryKey);
 
             if (typeof existing === 'undefined') {
