@@ -64,7 +64,7 @@ export default class RSSChecker {
                         // execute after delay
                         setTimeout(async () => {
                             await feed.listener(feed, feedEntry);
-                        }, feedParams.delaySeconds * 1000);
+                        }, feedConfig.delaySeconds * 1000);
                         
                     } else {
                         // execute immediately
