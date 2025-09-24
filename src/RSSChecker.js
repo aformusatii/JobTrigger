@@ -50,7 +50,7 @@ export default class RSSChecker {
             if (typeof existing === 'undefined') {
                 // If not, add it to the database
                 await this.db.put(feedEntryKey, feedEntry);
-                console.log(`New entry added to database`, id);
+                console.log(`New entry added to database`, feedEntryKey);
 
                 // prevent multiple calls to listener for multiple new entries in one feed check
                 if (!firstTimeFeed && !listnerCalled) {
