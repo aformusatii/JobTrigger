@@ -23,7 +23,7 @@ export default class RSSChecker {
             try {
                 const response = await axios.get(feedConfig.url);
                 // convert response.data to an object
-                const feedEntries = await extractFeedEntries(response.data);
+                const feedEntries = await extractFeedEntries(response.data, feedConfig.filter);
                 this.processFeed(feed, feedEntries);
             } catch (error) {
                 console.error(`Error fetching feed ${feedConfig.url}:`, error);
